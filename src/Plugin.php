@@ -45,6 +45,7 @@ class Plugin {
 
         // Administration
         $this->settings->register();
+        add_filter( 'plugin_action_links_unified-feed/unified-feed.php', [ $this, 'addSettingsLink' ] );
     }
 
     public function addRewriteRule(): void {
@@ -70,6 +71,19 @@ class Plugin {
 
         $this->renderer->render( $items );
         exit;
+    }
+
+    /**
+     * Ajoute un lien « Réglages » dans la liste des plugins.
+     *
+     * @param string[] $links
+     * @return string[]
+     */
+    public function addSettingsLink( array $links ): array {
+        $url  = admin_url( 'options-general.php?page=' . Settings::PAGE_SLUG );
+        $link = sprintf( '<a href="%s">%s</a>', esc_url( $url ), __( 'Settings', 'default' ) );
+        array_unshift( $links, $link );
+        return $links;
     }
 
     /**
